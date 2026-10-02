@@ -336,9 +336,7 @@ export default function WeddingInvite({
         aria-label={isPlaying ? "Pause music" : "Play music"}
         className="fixed bottom-5 right-5 z-[200] flex h-12 w-12 items-center justify-center rounded-full bg-[linear-gradient(135deg,#5e1a24,#3d1017)] text-goldlight shadow-[0_6px_18px_rgba(0,0,0,0.35)] transition-transform active:scale-90"
       >
-        <span
-          className={`text-[1.3rem] ${isPlaying ? "animate-pulse" : ""}`}
-        >
+        <span className={`text-[1.3rem] ${isPlaying ? "animate-pulse" : ""}`}>
           {isPlaying ? "♪" : "♫"}
         </span>
       </button>
@@ -370,7 +368,7 @@ export default function WeddingInvite({
             />
 
             <div className="relative z-[2]">
-              <div className="absolute left-1/2 top-[-65px] z-[2] flex h-16 w-16 transform -translate-x-1/2 animate-pulse-heart items-center justify-center rounded-full bg-[radial-gradient(circle_at_35%_30%,#5e1a24_0%,#3d1017_100%)] shadow-[0_8px_20px_rgba(94,26,36,0.4)]">
+              <div className="absolute left-1/2 top-[-65px] z-[2] flex h-16 w-16 animate-pulse-heart items-center justify-center rounded-full bg-[radial-gradient(circle_at_35%_30%,#5e1a24_0%,#3d1017_100%)] shadow-[0_8px_20px_rgba(94,26,36,0.4)]">
                 <svg
                   viewBox="0 0 24 24"
                   className="h-[26px] w-[26px] fill-white"
@@ -630,9 +628,7 @@ export default function WeddingInvite({
 
               <div className="mx-auto mb-7 flex max-w-[260px] justify-around text-[0.8rem] text-[#e8d9c0]">
                 <div>
-                  <div className="mb-1 tracking-[1px] opacity-75">
-                    WELCOME
-                  </div>
+                  <div className="mb-1 tracking-[1px] opacity-75">WELCOME</div>
                   <div className="font-bold">{receptionWelcomeTime}</div>
                 </div>
                 <div>
@@ -817,9 +813,7 @@ export default function WeddingInvite({
                     className="rounded-[10px] border border-[#e6d7b8] bg-white/80 px-4 py-3 shadow-[0_2px_10px_rgba(94,26,36,0.06)]"
                   >
                     <div className="mb-1 flex items-center justify-between gap-2">
-                      <span className="font-bold text-burgundy">
-                        {w.name}
-                      </span>
+                      <span className="font-bold text-burgundy">{w.name}</span>
                       <span className="whitespace-nowrap text-[0.72rem] text-[#9c8460]">
                         {w.date}
                       </span>
