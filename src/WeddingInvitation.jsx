@@ -216,37 +216,21 @@ export default function WeddingInvite({
 
   const [wishName, setWishName] = useState("");
   const [wishMessage, setWishMessage] = useState("");
-  const [wishes, setWishes] = useState([
-    {
-      id: 1,
-      name: "Camila Duarte",
-      message:
-        "Wishing you both every joy. Save us a seat at the next celebration.",
-      date: "9/1/2027, 12:00:00 PM",
-    },
-    {
-      id: 2,
-      name: "Samuel Adjei",
-      message:
-        "To the two of you: may you argue rarely, forgive quickly and dance often.",
-      date: "9/2/2027, 1:00:00 PM",
-    },
-    {
-      id: 3,
-      name: "Freya Lindqvist",
-      message:
-        "So happy for you both — wishing you a lifetime of love and laughter.",
-      date: "9/3/2027, 2:00:00 PM",
-    },
-  ]);
+  const [wishes, setWishes] = useState([]);
+  const [wishSent, setWishSent] = useState(false);
+
+  // الرسايل بتظهر بس لو الرابط فيه ?couple=المفتاح_السري
+  const coupleKey =
+    new URLSearchParams(window.location.search).get("couple") || "";
+  const isCouple = coupleKey !== "";
 
   // تحميل الرسايل المحفوظة في الشيت
   useEffect(() => {
-    if (!SHEET_URL) return;
-    fetch(SHEET_URL)
+    if (!SHEET_URL || !isCouple) return;
+    fetch(`${SHEET_URL}?key=${encodeURIComponent(coupleKey)}`)
       .then((r) => r.json())
       .then((rows) => {
-        if (!Array.isArray(rows) || rows.length === 0) return;
+        if (!Array.isArray(rows)) return;
         setWishes(
           rows.map((r, i) => ({
             id: i + 1,
@@ -273,15 +257,18 @@ export default function WeddingInvite({
         }),
       }).catch(() => {});
     }
-    setWishes((prev) => [
-      ...prev,
-      {
-        id: Date.now(),
-        name: wishName.trim(),
-        message: wishMessage.trim(),
-        date: new Date().toLocaleString("en-US"),
-      },
-    ]);
+    if (isCouple) {
+      setWishes((prev) => [
+        ...prev,
+        {
+          id: Date.now(),
+          name: wishName.trim(),
+          message: wishMessage.trim(),
+          date: new Date().toLocaleString("en-US"),
+        },
+      ]);
+    }
+    setWishSent(true);
     setWishName("");
     setWishMessage("");
   }
@@ -840,8 +827,14 @@ export default function WeddingInvite({
                   </button>
                 </div>
               </form>
+              {wishSent && (
+                <p className="mt-4 text-center text-[0.9rem] text-burgundy">
+                  Thank you! Your wishes were sent to the couple ♥
+                </p>
+              )}
             </div>
 
+            {isCouple && (
             <div className="relative z-[1] mx-auto mt-8 max-h-[320px] max-w-[420px] space-y-3 overflow-y-auto pr-1 text-left">
               {wishes
                 .slice()
@@ -864,7 +857,13 @@ export default function WeddingInvite({
                     </p>
                   </div>
                 ))}
+              {wishes.length === 0 && (
+                <p className="text-center text-[0.85rem] text-[#9c8460]">
+                  No wishes yet.
+                </p>
+              )}
             </div>
+            )}
           </div>
 
           <footer className="bg-burgundydark p-[18px] text-center">
