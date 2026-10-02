@@ -180,10 +180,10 @@ const floatKeyframesCSS = `
 export default function WeddingInvite({
   groomName = "Ahmed",
   brideName = "Yomna",
-  weddingDateISO = "2026-10-15T19:00:00",
+  weddingDateISO = "2026-10-15T15:00:00",
   weddingDateLabel = "October 15",
   weddingYearLabel = "2026",
-  weddingTimeLabel = "7:00 PM",
+  weddingTimeLabel = "3:00 PM",
   venueName = "Heaven Royal Halls",
   hallName = "Cecelia Hall",
   venueAddress = "",
