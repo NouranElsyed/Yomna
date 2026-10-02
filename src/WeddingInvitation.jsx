@@ -184,9 +184,11 @@ export default function WeddingInvite({
   weddingDateLabel = "October 15",
   weddingYearLabel = "2026",
   weddingTimeLabel = "7:00 PM",
-  venueName = "Royal Prince Hall",
-  venueAddress = "Nile Street, Cairo, Egypt",
-  mapUrl = "https://maps.google.com",
+  venueName = "Heaven Royal Halls",
+  hallName = "Cecelia Hall",
+  venueAddress = "",
+  mapUrl = "https://maps.app.goo.gl/ShC7okxxjvHU7VYH7",
+  mapCoords = "31.2317855,29.9450354",
   couplePhoto = "/yomnaAhmed.jpeg",
   weddingDayLabel = "Thursday",
   receptionWelcomeTime = "17:00",
@@ -273,25 +275,6 @@ export default function WeddingInvite({
     setWishMessage("");
   }
 
-  const galleryPhotos = Array.from({ length: 9 }, () => couplePhoto);
-  const [galleryIndex, setGalleryIndex] = useState(2);
-
-  function goPrev() {
-    setGalleryIndex(
-      (i) => (i - 1 + galleryPhotos.length) % galleryPhotos.length,
-    );
-  }
-  function goNext() {
-    setGalleryIndex((i) => (i + 1) % galleryPhotos.length);
-  }
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      setGalleryIndex((i) => (i + 1) % galleryPhotos.length);
-    }, 2500);
-    return () => clearInterval(id);
-  }, [galleryPhotos.length]);
-
   const timeLeft = useCountdown(weddingDateISO);
 
   const weddingDateObj = new Date(weddingDateISO);
@@ -318,12 +301,12 @@ export default function WeddingInvite({
       .replace(/[-:]/g, "")
       .split(".")[0];
     const details = encodeURIComponent(
-      `Wedding reception of ${groomName} & ${brideName} at ${venueName}`,
+      `Wedding reception of ${groomName} & ${brideName} at ${hallName}, ${venueName}`,
     );
     const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
       `${groomName} & ${brideName}'s Wedding`,
     )}&dates=${start}Z/${end}Z&details=${details}&location=${encodeURIComponent(
-      venueAddress,
+      venueAddress || `${hallName}, ${venueName}`,
     )}`;
     window.open(url, "_blank", "noopener,noreferrer");
   }
@@ -528,6 +511,8 @@ export default function WeddingInvite({
               </div>
               <div className="mb-4 text-[0.95rem] text-[#e8d9c0]">
                 {venueName}
+                <br />
+                {hallName}
               </div>
 
               <div className="flex items-center justify-center gap-8 text-[0.85rem] tracking-[1px] text-[#e8d9c0]">
@@ -547,72 +532,6 @@ export default function WeddingInvite({
                 alt=""
                 className="pointer-events-none absolute bottom-[-14px] right-[-14px] z-[2] w-[140px] rotate-[6deg] opacity-95"
               />
-            </div>
-          </div>
-
-          <div className="relative overflow-hidden px-5 pb-10 pt-8 text-center">
-            <img
-              src="/castle-background.webp"
-              alt=""
-              className="pointer-events-none absolute bottom-0 left-1/2 z-0 w-[420px] max-w-none -translate-x-1/2 opacity-[0.1]"
-            />
-            <div className="relative z-[1] mb-9 font-amiri text-[0.8rem] tracking-[5px] text-burgundy">
-              PHOTO&nbsp;GALLERY
-            </div>
-
-            <div className="relative z-[1] flex h-[280px] items-center justify-center [perspective:1200px]">
-              <button
-                type="button"
-                onClick={goPrev}
-                aria-label="Previous photo"
-                className="absolute left-0 z-[20] flex h-9 w-9 items-center justify-center rounded-full bg-white/80 text-burgundy shadow-[0_2px_8px_rgba(0,0,0,0.2)] transition-transform active:scale-90"
-              >
-                ‹
-              </button>
-
-              <div className="relative h-full w-full max-w-[420px]">
-                {galleryPhotos.map((photo, i) => {
-                  let offset = i - galleryIndex;
-                  const half = galleryPhotos.length / 2;
-                  if (offset > half) offset -= galleryPhotos.length;
-                  if (offset < -half) offset += galleryPhotos.length;
-                  const abs = Math.abs(offset);
-                  if (abs > 2) return null;
-                  const translate = offset * 78;
-                  const rotate = offset * -28;
-                  const scale = offset === 0 ? 1 : 0.78;
-                  const zIndex = 10 - abs;
-                  const opacity = offset === 0 ? 1 : 0.55;
-                  return (
-                    <img
-                      key={i}
-                      src={photo}
-                      alt={`${groomName} & ${brideName} memory ${i + 1}`}
-                      onClick={() => setGalleryIndex(i)}
-                      className="absolute left-1/2 top-1/2 w-[190px] cursor-pointer rounded-[10px] border-4 border-white object-cover shadow-[0_14px_30px_rgba(0,0,0,0.35)] transition-transform duration-700 ease-in-out"
-                      style={{
-                        aspectRatio: "3 / 4",
-                        zIndex,
-                        opacity,
-                        transform: `translate(-50%, -50%) translateX(${translate}px) rotateY(${rotate}deg) scale(${scale})`,
-                      }}
-                    />
-                  );
-                })}
-              </div>
-
-              <button
-                type="button"
-                onClick={goNext}
-                aria-label="Next photo"
-                className="absolute right-0 z-[20] flex h-9 w-9 items-center justify-center rounded-full bg-white/80 text-burgundy shadow-[0_2px_8px_rgba(0,0,0,0.2)] transition-transform active:scale-90"
-              >
-                ›
-              </button>
-            </div>
-
-            <div className="relative z-[1] mt-6 text-[0.8rem] tracking-[1px] text-[#9c8460]">
-              {galleryIndex + 1} / {galleryPhotos.length}
             </div>
           </div>
 
@@ -759,19 +678,25 @@ export default function WeddingInvite({
               <div className="mb-2 font-amiri text-[0.95rem] font-bold tracking-[2px] text-burgundy">
                 WEDDING&nbsp;RECEPTION&nbsp;VENUE
               </div>
-              <div className="mb-1 text-[0.95rem] text-burgundydark">
+              <div
+                className={`text-[0.95rem] text-burgundydark ${venueAddress ? "mb-1" : "mb-5"}`}
+              >
                 {venueName}
+                <br />
+                {hallName}
               </div>
-              <div className="mb-5 text-[0.85rem] text-[#7a5c3e]">
-                {venueAddress}
-              </div>
+              {venueAddress && (
+                <div className="mb-5 text-[0.85rem] text-[#7a5c3e]">
+                  {venueAddress}
+                </div>
+              )}
 
               <div className="mx-auto mb-5 max-w-[420px] overflow-hidden rounded-[12px] border border-[#e3d6bd] shadow-[0_10px_30px_rgba(0,0,0,0.15)]">
                 <iframe
                   title="Wedding reception venue map"
                   src={`https://maps.google.com/maps?q=${encodeURIComponent(
-                    `${venueName} ${venueAddress}`,
-                  )}&output=embed`}
+                    mapCoords || `${venueName} ${venueAddress}`.trim(),
+                  )}&z=17&output=embed`}
                   className="h-[260px] w-full border-0"
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
