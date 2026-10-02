@@ -1,5 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 
+// حطي هنا لينك الـ Web App بتاع Google Apps Script (شوفي google-sheet-setup.md).
+// لو سيبتيه فاضي، الرسايل هتفضل مؤقتة في الصفحة بس.
+const SHEET_URL =
+  "https://script.google.com/macros/s/AKfycbzEGo8Ur7BWxdAB3BIVoU9kbcOq0dDPOSvuX0L_3AQUCMVpuhM14ihanbADbhvc69Y2kw/exec";
+
 /**
  * WeddingInvite
  * -------------
@@ -235,9 +240,39 @@ export default function WeddingInvite({
     },
   ]);
 
+  // تحميل الرسايل المحفوظة في الشيت
+  useEffect(() => {
+    if (!SHEET_URL) return;
+    fetch(SHEET_URL)
+      .then((r) => r.json())
+      .then((rows) => {
+        if (!Array.isArray(rows) || rows.length === 0) return;
+        setWishes(
+          rows.map((r, i) => ({
+            id: i + 1,
+            name: String(r.name ?? ""),
+            message: String(r.message ?? ""),
+            date: r.date ? new Date(r.date).toLocaleString("en-US") : "",
+          })),
+        );
+      })
+      .catch(() => {});
+  }, []);
+
   function handleWishSubmit(e) {
     e.preventDefault();
     if (!wishName.trim() || !wishMessage.trim()) return;
+    if (SHEET_URL) {
+      fetch(SHEET_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          name: wishName.trim(),
+          message: wishMessage.trim(),
+        }),
+      }).catch(() => {});
+    }
     setWishes((prev) => [
       ...prev,
       {
@@ -336,7 +371,9 @@ export default function WeddingInvite({
         aria-label={isPlaying ? "Pause music" : "Play music"}
         className="fixed bottom-5 right-5 z-[200] flex h-12 w-12 items-center justify-center rounded-full bg-[linear-gradient(135deg,#5e1a24,#3d1017)] text-goldlight shadow-[0_6px_18px_rgba(0,0,0,0.35)] transition-transform active:scale-90"
       >
-        <span className={`text-[1.3rem] ${isPlaying ? "animate-pulse" : ""}`}>
+        <span
+          className={`text-[1.3rem] ${isPlaying ? "animate-pulse" : ""}`}
+        >
           {isPlaying ? "♪" : "♫"}
         </span>
       </button>
@@ -628,7 +665,9 @@ export default function WeddingInvite({
 
               <div className="mx-auto mb-7 flex max-w-[260px] justify-around text-[0.8rem] text-[#e8d9c0]">
                 <div>
-                  <div className="mb-1 tracking-[1px] opacity-75">WELCOME</div>
+                  <div className="mb-1 tracking-[1px] opacity-75">
+                    WELCOME
+                  </div>
                   <div className="font-bold">{receptionWelcomeTime}</div>
                 </div>
                 <div>
@@ -813,7 +852,9 @@ export default function WeddingInvite({
                     className="rounded-[10px] border border-[#e6d7b8] bg-white/80 px-4 py-3 shadow-[0_2px_10px_rgba(94,26,36,0.06)]"
                   >
                     <div className="mb-1 flex items-center justify-between gap-2">
-                      <span className="font-bold text-burgundy">{w.name}</span>
+                      <span className="font-bold text-burgundy">
+                        {w.name}
+                      </span>
                       <span className="whitespace-nowrap text-[0.72rem] text-[#9c8460]">
                         {w.date}
                       </span>
